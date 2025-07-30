@@ -4,18 +4,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLLoader;
 
 @Mod(Main.MOD_ID)
 public final class Main {
     public static final String MOD_ID = "clientchatclean";
 
-    public Main(FMLJavaModLoadingContext context) {
+    public Main() {
         if (!FMLLoader.getDist().isClient()) return;
-        context.registerConfig(ModConfig.Type.CLIENT, CONFIG);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, CONFIG);
         MinecraftForge.EVENT_BUS.addListener((ClientChatEvent event) -> {
             if (event.getMessage().equals(DELETION.get())) {
                 event.setCanceled(true);

@@ -1,22 +1,24 @@
 package me.kall.clientchatclean;
 
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.client.event.ClientChatEvent;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLLoader;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.client.event.ClientChatEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.NeoForge;
 
 @Mod(Main.MOD_ID)
 public final class Main {
     public static final String MOD_ID = "clientchatclean";
 
-    public Main(FMLJavaModLoadingContext context) {
+    public Main(IEventBus modEventBus, Dist dist, ModContainer container) {
         if (!FMLLoader.getDist().isClient()) return;
-        context.registerConfig(ModConfig.Type.CLIENT, CONFIG);
-        MinecraftForge.EVENT_BUS.addListener((ClientChatEvent event) -> {
+        container.registerConfig(ModConfig.Type.CLIENT, CONFIG);
+        NeoForge.EVENT_BUS.addListener((ClientChatEvent event) -> {
             if (event.getMessage().equals(DELETION.get())) {
                 event.setCanceled(true);
                 Minecraft.getInstance().gui.getChat().clearMessages(true);
@@ -24,11 +26,11 @@ public final class Main {
         });
     }
 
-    public static final ForgeConfigSpec CONFIG;
-    public static final ForgeConfigSpec.ConfigValue<? extends String> DELETION;
+    public static final ModConfigSpec CONFIG;
+    public static final ModConfigSpec.ConfigValue<? extends String> DELETION;
 
     static {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         builder.push("ClientChatClean");
         DELETION = builder.define("DeletionMessage", "123");
         builder.pop();
